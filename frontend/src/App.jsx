@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Leaderboard from './pages/Leaderboard';
+import ViewPoints from './pages/ViewPoints';
+import History from './pages/History';
 
 function App() {
 
@@ -18,6 +20,10 @@ function App() {
                 <Route path="/register" element={<Register />} />
 
                 <Route path="/Leaderboard" element={<Leaderboard />} />
+
+                <Route path="/ViewPoints" element={<ViewPoints />} />
+
+                <Route path="/History" element={<History />} />
 
             </Routes>
         </BrowserRouter>

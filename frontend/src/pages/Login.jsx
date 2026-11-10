@@ -1,9 +1,12 @@
 import React from 'react';
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 
 
 function Login() {
+    const navigate = useNavigate();
     
     //Here I am declaring all the variables needed for a successful login
     const [username, setUsername] = useState("");
@@ -11,12 +14,13 @@ function Login() {
     const [result, setResult] = useState("");
 
 
+    //Handles the login functionality
     const handleLogin = async () => {
         try {
 
             // Send HTTP POST request to Node.js
             const response = await fetch(
-                "http://localhost:5000/api/process-word",
+                "http://localhost:5000/api/login",
                 {
                     method: "POST",
 
@@ -25,7 +29,8 @@ function Login() {
                     },
 
                     body: JSON.stringify({
-                        word: username
+                        username: username,
+                        password: password
                     })
                 }
             );
@@ -33,19 +38,22 @@ function Login() {
             // Convert the response into JSON
             const data = await response.json();
 
-            // Display the returned message
-            setResult(data.message);
+            //Here is the code that runs based on if the results returned true or false
+            if(data.success === true){
 
+                //If it is true, I want the 
+
+                setResult("Success!")
+                navigate('/ViewPoints')
+            }
+            else{
+                setResult("Incorrect passweord or username entered. Please try again.")
+            }
         } catch (error) {
-
             console.error("Error:", error);
-
         }
 
     };
-
-
-
 
 
     return (
@@ -81,14 +89,13 @@ function Login() {
                     />
                 </div>
 
+                {/* Backend Result */}
+                <p className="login-result">{result}</p>
+
                 {/* Login Button */}
                 <button className="login-button" onClick={handleLogin}>
                     Login
                 </button>
-
-                {/* Backend Result */}
-                <p className="login-result">{result}</p>
-
             </div>
 
         </div>
