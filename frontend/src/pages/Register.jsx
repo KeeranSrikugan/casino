@@ -60,8 +60,18 @@ function Register() {
 
         //Here is the code that runs based on if the results returned true or false
         if(data.success === true){
-          setResult(data.message);
 
+          console.log(data.player);
+          localStorage.removeItem("player");
+
+          //Here the players info is saved in local storage
+          localStorage.setItem(
+            "player", JSON.stringify(data.player)
+          );
+
+
+          setResult(data.message);
+          navigate('/ViewPoints');
 
           
         }

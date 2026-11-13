@@ -39,7 +39,7 @@ app.post("/api/login", async (req, res) => {
 
     //Here we connect to the neonDB and check 
     try {
-        // 
+        // Here we check if there are any other users with the username
         const result = await client.query(
             "SELECT * FROM players WHERE username = $1",
             [username]
@@ -78,7 +78,8 @@ app.post("/api/login", async (req, res) => {
                 first_name: player.first_name,
                 last_name: player.last_name,
                 username: player.username,
-                total_points: player.total_points
+                total_points: player.total_points,
+                role: player.role
             }
 
         });
@@ -173,7 +174,44 @@ app.post("/api/register", async (req, res) => {
 });
 
 
+//Here is the post call for collecting all current player information for the admin to select
+app.get("/api/admin/playerlist", async (req, res) => {
 
+    const client = await pool.connect();
+
+    try{
+
+        //Here we get a list of all players by gettin every row in database
+
+         const result = await pool.query(
+
+            `SELECT id, first_name, last_name, username, total_points
+            FROM players
+            WHERE role != 'admin'
+            `
+
+
+        );
+
+        //This returns a list of 
+        return res.status(200).json({
+            success: true,
+            players: result.rows
+        });
+
+
+    }catch (error) {
+        //This return sends a json that tells React that its false
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+
+    }finally{
+        client.release();
+    }
+
+});
 
 
 

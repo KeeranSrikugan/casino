@@ -41,10 +41,32 @@ function Login() {
             //Here is the code that runs based on if the results returned true or false
             if(data.success === true){
 
-                //If it is true, I want the 
 
-                setResult("Success!")
-                navigate('/ViewPoints')
+                if(data.player.role === "admin"){
+                    
+                    localStorage.removeItem("player");
+
+                    console.log(data.player);
+                    localStorage.setItem(
+                        "player", JSON.stringify(data.player)
+                    );
+
+
+                    navigate('/ViewPlayersAdmin')
+                }else{
+                    //Clear the previous player info
+                    localStorage.removeItem("player");
+
+                    console.log(data.player);
+                    localStorage.setItem(
+                        "player", JSON.stringify(data.player)
+                    );
+
+                    setResult("Success!")
+                    navigate('/ViewPoints')
+                }
+
+            
             }
             else{
                 setResult("Incorrect passweord or username entered. Please try again.")

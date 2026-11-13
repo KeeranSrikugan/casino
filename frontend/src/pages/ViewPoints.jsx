@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style/ViewPoints.css';
 
@@ -12,6 +12,10 @@ function ViewPoints() {
 
     // Get player's total points
   const totalPoints = player?.total_points ?? 0;
+
+  useEffect(()=>{
+     console.log(player.role);
+  });
 
   return (
      <div className="viewpoints-container">
