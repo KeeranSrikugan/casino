@@ -2,14 +2,38 @@ require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require('pg');
+const http = require("http");
+const { Server } = require("socket.io");
 
 
 //Here I am starting express
 const app = express();
 
-//Here I asum using cors
+//Here I am using cors
 app.use(cors());
 app.use(express.json());
+
+//Potentially using sockets later
+// const server = http.createServer(app);
+// const io = new Server(server, {
+//     cors: {
+//         origin: "http://localhost:5173",
+//         methods: ["GET", "POST"]
+//     }
+
+
+// })
+
+// io.on("connection", (socket) => {
+
+//     console.log("A user connected:", socket.id);
+
+//     socket.on("disconnect", () => {
+//         console.log("User disconnected:", socket.id);
+//     });
+
+// });
+
 
 
 //Here is the code used to connect the database from NeonDB
@@ -212,6 +236,155 @@ app.get("/api/admin/playerlist", async (req, res) => {
     }
 
 });
+
+
+//Here I am adding a new section where the points will get retrieved for the user
+app.get("/api/player/:id/points", async (req, res) => {
+
+    const user_id = req.params;
+
+    try {
+
+        const result = await pool.query(
+            `SELECT id, total_points
+             FROM players
+             WHERE id = $1`,
+            [user_id]
+        );
+
+        
+        return res.status(200).json({
+            success: true,
+            total_points: result.rows[0].total_points
+        });
+
+    } catch (error) {
+
+        console.error("View points error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+
+    }
+
+});
+
+
+
+app.use(express.json());
+
+app.post("/api/GameTransactions", async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+
+        const { playerId, gameName, betAmount, gameResult } = req.body;
+        const bet = Number(betAmount);
+        let pointsChange;
+
+        if (gameResult === "Win") {
+            pointsChange = bet;
+        } else {
+            pointsChange = -bet;
+        }
+
+        console.log(playerId);
+        console.log(gameName);
+        console.log(pointsChange);
+        console.log(gameResult);
+
+        const add_game_result = await client.query(
+
+            `INSERT INTO game_transactions
+            (player_id,game_name, points_change, result)
+
+            VALUES ($1, $2, $3, $4)`,
+
+            [
+                playerId,
+                gameName,
+                pointsChange,
+                gameResult
+            ]
+
+        );
+
+        //The first set of SQL is to create a new record in 
+        const update_points = await client.query(
+            `UPDATE players
+             SET total_points = total_points + $1
+             WHERE id = $2`,
+            [pointsChange, playerId]
+        );
+
+        res.status(201).json({
+            message: "Game successfully saved.",
+        });
+
+    } catch (error) {
+
+        console.error("Error creating transaction:", error);
+
+        res.status(500).json({
+            message: "Server error creating transaction."
+        });
+    }finally{
+        client.release();
+    }
+});
+
+
+// Get all players ranked by points
+app.get("/api/leaderboard", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(`
+            SELECT id, username, total_points
+            FROM players
+            WHERE role != 'admin'
+            ORDER BY total_points DESC
+        `);
+
+        console.log(result);
+        res.json(result.rows);
+
+    } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+    }finally{
+        client.release();
+    }
+});
+
+
+app.get("/api/history", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const playerId = req.query.playerId;
+
+        const result = await pool.query(`
+            SELECT game_name, points_change, result, created_at
+            FROM game_transactions
+            WHERE player_id = $1
+            ORDER BY created_at DESC
+        `, [playerId]);
+
+        res.status(201).json({
+            message: "History is shown!",
+            history: result.rows
+        });
+
+    } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+    }finally{
+        client.release();
+    }
+});
+
+
+
+
 
 
 

@@ -29,28 +29,14 @@ function ViewPlayersAdmin() {
         fetchPlayers();
     }, []);
 
-
-    // Select a player
-    // const handleSelectPlayer = (player) => {
-
-    //     // Save selected player information
-    //     localStorage.setItem(
-    //         "selectedPlayer",
-    //         JSON.stringify(player)
-    //     );
-
-    // };
-
-    // if (loading) {
-    //     return <h2>Loading players...</h2>;
-    // }
-
-    // if (error) {
-    //     return <p>{error}</p>;
-    // }
-
     const selectedUser = async () => {
-        console.log(selectedPlayer);
+        localStorage.removeItem("selectedPlayer");
+        localStorage.setItem(
+            "selectedPlayer", JSON.stringify(selectedPlayer)
+        );
+        navigate('/ChangePoints')
+
+
         if(selectedPlayer === null){
             setUserGetResult("Please Select a user!");
         }
