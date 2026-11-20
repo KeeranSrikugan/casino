@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './style/Leaderboard.css';
 
 function Leaderboard() {
 
@@ -13,29 +14,24 @@ function Leaderboard() {
                 );
                 const data = await response.json();
                 setPlayers(data);
-                
-
-
             } catch (error) {
                 console.error("Leaderboard error:", error);
             } 
         };
-
         fetchLeaderboard();
-
     }, []);
 
 
     return (
-        <div>
+        <div className="leaderboard-container">
 
             <h1>Leaderboard</h1>
 
             {players.length === 0 ? (
-                <p>No players found.</p>
+                <p className="no-players">No players found.</p>
             ) : (
 
-                <table>
+                <table className="leaderboard-table">
                     <thead>
                         <tr>
                             <th>Rank</th>
@@ -49,11 +45,10 @@ function Leaderboard() {
                             <tr key={player.id}>
                                 <td>{index + 1}</td>
                                 <td>{player.username}</td>
-                                <td>{player.points}</td>
+                                <td>{player.total_points}</td>
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
 
             )}

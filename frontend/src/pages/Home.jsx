@@ -8,30 +8,23 @@ function Home() {
 
     
 return (
-    <div className="home-container">
+    <div className="HomeContainer">
+        <div className="HomeContent">
 
-        <div className="home-content">
-
-            <h1>♠ Xennial's Casino ♦</h1>
-
+            <h1>♠ Xennial's Casino Event ♦</h1>
             <h2>Welcome to Xennial's In-House Casino Event</h2>
-
             <p>Login or register to keep track of your points!</p>
 
-            <div className="home-buttons">
-
+            <div className="HomeButtons">
                 <button onClick={() => navigate('/login')}>
                     Login
                 </button>
-
                 <button onClick={() => navigate('/register')}>
                     Register
                 </button>
-
             </div>
-
+            
         </div>
-
     </div>
 );
 

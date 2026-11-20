@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import './style/Login.css';
 
 
 
@@ -42,16 +43,12 @@ function Login() {
             if(data.success === true){
 
 
+                //Based on the role of the player, save the information locally and direct them to the correct page
                 if(data.player.role === "admin"){
-                    
                     localStorage.removeItem("player");
-
-                    console.log(data.player);
                     localStorage.setItem(
                         "player", JSON.stringify(data.player)
                     );
-
-
                     navigate('/ViewPlayersAdmin')
                 }else{
                     //Clear the previous player info
@@ -61,12 +58,8 @@ function Login() {
                     localStorage.setItem(
                         "player", JSON.stringify(data.player)
                     );
-
-                    setResult("Success!")
                     navigate('/ViewPoints')
                 }
-
-            
             }
             else{
                 setResult("Incorrect passweord or username entered. Please try again.")
@@ -79,47 +72,40 @@ function Login() {
 
 
     return (
-       <div className="login-container">
+       <div className="login_container">
+        <div className="login_box">
 
-            <div className="login-box">
+            <h1>♠ Welcome Back Player! ♦</h1>
 
-                <h1>Welcome Back Player!</h1>
+            <p className="login_subtitle"> Please log back into your account </p>
 
-                <p className="login-subtitle">
-                    Please log back into your account
-                </p>
-
-                {/* Username */}
-                <div className="input-group">
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        placeholder="Enter your username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-
-                {/* Password */}
-                <div className="input-group">
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-
-                {/* Backend Result */}
-                <p className="login-result">{result}</p>
-
-                {/* Login Button */}
-                <button className="login-button" onClick={handleLogin}>
-                    Login
-                </button>
+            <div className="input_group">
+                <label>Username</label>
+                <input
+                    type="text"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
             </div>
 
+            <div className="input_group">
+                <label>Password</label>
+                <input
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+            </div>
+
+            <p className="login_result">{result}</p>
+
+            <button className="login_button" onClick={handleLogin}>
+                Login
+            </button>
+
+         </div>
         </div>
     );
 }

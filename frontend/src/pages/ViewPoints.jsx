@@ -1,26 +1,55 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style/ViewPoints.css';
+import { io } from 'socket.io-client';
 
 
 function ViewPoints() {
 
   const navigate = useNavigate();
-
-    // Retrieve logged-in player's information
   const player = JSON.parse(localStorage.getItem("player"));
+  const [totalPoints, setTotalPoints] = useState();
 
-    // Get player's total points
-  const totalPoints = player?.total_points ?? 0;
+  useEffect(() => {
 
-  useEffect(()=>{
-     console.log(player.role);
-  });
+        if (!player?.id) return;
+
+        // Retrieve latest points
+        const fetchPoints = async () => {
+
+            const response = await fetch(`http://localhost:5000/api/player/${player.id}/points`);
+            const data = await response.json();
+
+            if (data.success === true) {
+                setTotalPoints(data.total_points);
+            }
+        };
+
+        // Initial points retrieval
+        fetchPoints();
+
+        // Here we open a socket and keep listening for any changes the admin makes to the points.
+        const socket = io("http://localhost:5000");
+        socket.on("pointsUpdated", (playerId) => {
+            if (String(playerId) === String(player.id)) {
+                fetchPoints();
+            }
+
+        });
+
+        const disconnectSocket = () => { socket.disconnect(); };
+        return disconnectSocket;
+
+    }, []);
 
   return (
      <div className="viewpoints-container">
 
             <div className="points-box">
+
+                <button className="register_back_button" onClick={() => navigate(-1)}>
+                    Back
+                </button>
 
                 <h1>Total Points</h1>
 
@@ -33,21 +62,15 @@ function ViewPoints() {
                 </p>
 
                 <div className="points-buttons">
-
-                    <button
-                        onClick={() => navigate("/leaderboard")}
-                    >
+                    <button onClick={() => navigate("/leaderboard")}>
                         Leaderboard
                     </button>
 
-                    <button
-                        onClick={() => navigate("/history")}
-                    >
+                    <button onClick={() => navigate("/history")}>
                         History
                     </button>
 
                 </div>
-
             </div>
 
         </div>

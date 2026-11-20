@@ -1,101 +1,66 @@
 
-/* Main page */
-.home-container {
+.HomeContainer {
     min-height: 100vh;
-    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-
-    background: radial-gradient(circle, #29221a, #101014);
+    background-color: #290000;
+    font-family: Arial, sans-serif;
 }
 
-/* Content */
-.home-content {
-    width: 100%;
-    max-width: 600px;
+.HomeContent {
     text-align: center;
-    padding: 40px 25px;
-    box-sizing: border-box;
-
-    background-color: #1c1c24;
-    border: 1px solid #D4AF37;
-    border-radius: 16px;
-
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
-}
-
-/* Main title */
-.home-content h1 {
-    color: #D4AF37;
-    font-size: clamp(28px, 7vw, 42px);
-    margin-bottom: 30px;
-}
-
-/* Welcome heading */
-.home-content h2 {
+    background-color: #3b1515;
     color: white;
-    font-size: clamp(20px, 5vw, 28px);
+    padding: 40px;
+    border: 2px solid #d4af37;
+    border-radius: 10px;
+    max-width: 450px;
+}
+
+.casino-symbols {
+    font-size: 25px;
     margin-bottom: 15px;
-    line-height: 1.4;
+    color: #d4af37;
 }
 
-/* Description */
-.home-content p {
-    color: #bbbbbb;
+.HomeContent h1 {
+    color: #d4af37;
+    font-size: 32px;
+}
+
+.HomeContent p {
+    color: #ddd;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+
+
+.HomeButtons button {
+    padding: 12px;
     font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 35px;
-}
-
-/* Buttons */
-.home-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.home-buttons button {
-    width: 100%;
-    max-width: 280px;
-    padding: 15px;
-
-    border: none;
-    border-radius: 8px;
-
-    background-color: #D4AF37;
-    color: #101014;
-
-    font-size: 18px;
     font-weight: bold;
+    border: 1px solid #d4af37;
+    border-radius: 5px;
     cursor: pointer;
-
-    transition: 0.2s ease;
 }
 
-.home-buttons button:hover {
-    background-color: #F5D76E;
-    transform: translateY(-2px);
+.login_btn {
+    background-color: #d4af37;
+    color: #153b2b;
 }
 
-/* Smaller mobile screens */
-@media (max-width: 400px) {
-    .home-content {
-        padding: 30px 18px;
-    }
+.register_btn {
+    background-color: transparent;
+    color: #d4af37;
+}
 
-    .home-content h1 {
-        font-size: 26px;
-    }
+.home_buttons button:hover {
+    opacity: 0.8;
+}
 
-    .home-content h2 {
-        font-size: 19px;
-    }
-
-    .home-content p {
-        font-size: 14px;
-    }
+.casino_footer {
+    margin-top: 25px;
+    color: #d4af37;
 }

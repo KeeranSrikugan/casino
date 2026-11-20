@@ -6,35 +6,21 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 
-//Here I am starting express
 const app = express();
-
-//Here I am using cors
 app.use(cors());
 app.use(express.json());
 
-//Potentially using sockets later
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//     cors: {
-//         origin: "http://localhost:5173",
-//         methods: ["GET", "POST"]
-//     }
 
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:5173"
+    }
+});
 
-// })
-
-// io.on("connection", (socket) => {
-
-//     console.log("A user connected:", socket.id);
-
-//     socket.on("disconnect", () => {
-//         console.log("User disconnected:", socket.id);
-//     });
-
-// });
-
-
+io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
+});
 
 //Here is the code used to connect the database from NeonDB
 
@@ -55,48 +41,36 @@ const pool = new Pool({
 
 //This is the login check occurs with the information pulled from React and compared to the database
 app.post("/api/login", async (req, res) => {
-    const client = await pool.connect();
 
-    // Get username and password from React
+    //Get the username and password
     const { username, password } = req.body;
-
-
-    //Here we connect to the neonDB and check 
+    const client = await pool.connect();
     try {
-        // Here we check if there are any other users with the username
         const result = await client.query(
             "SELECT * FROM players WHERE username = $1",
             [username]
         );
 
-        // If the results is empty, we know the user does not exsist or info is incorrect
+        //Checks if username and password are valid
         if (result.rows.length === 0) {
             return res.status(401).json({
                 success: false,
                 message: "Invalid username or password"
             });
-
         }
 
-        // Since we know the results isnt empty, we can compare the passwords as well
         const player = result.rows[0];
-
-        // Compare the entered password with database password
         if (password !== player.password) {
             return res.status(401).json({
                 success: false,
                 message: "Invalid username or password"
             });
-
         }
 
-        // Login successful
+        //Return this json file if login successfull 
         return res.status(200).json({
-
             success: true,
-            message: "Login successful!",
-
-            // Send player information back to React
+            message: "Login successfull!",
             player: {
                 id: player.id,
                 first_name: player.first_name,
@@ -109,12 +83,12 @@ app.post("/api/login", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Login error:", error);
 
+        console.error("Error accessing database: ", error);
         //This return sends a json that tells React that its false
         return res.status(500).json({
             success: false,
-            message: "Server error"
+            message: "Error connecting to database."
         });
 
     }finally{
@@ -126,16 +100,16 @@ app.post("/api/login", async (req, res) => {
 
 //Here is the Post call for when a user registers
 app.post("/api/register", async (req, res) => {
-    const client = await pool.connect();
 
     // Get username and password from React
     const { firstName, lastName, username, password } = req.body;
-
+    const client = await pool.connect();
+    
     //Here we connect to the neonDB and check 
     try {
-    
-        const existingPlayer = await pool.query(
-             "SELECT id FROM players WHERE LOWER(username) = LOWER($1)",
+        const existingPlayer =await client.query(
+             `SELECT id FROM players 
+             WHERE LOWER(username) = LOWER($1)`,
             [username.trim()]
         );
         
@@ -149,7 +123,7 @@ app.post("/api/register", async (req, res) => {
         //Here we connect to the database and add the new user
         //Note: Returning make its so that we get the new entry made back
         //This would be useful for using to remember which player is logged in
-        const result = await pool.query(
+        const result = await client.query(
 
             `INSERT INTO players
             (first_name, last_name, username, password)
@@ -185,6 +159,7 @@ app.post("/api/register", async (req, res) => {
         });
 
     } catch (error) {
+        console.error("Error accessing database: ", error);
         //This return sends a json that tells React that its false
         return res.status(500).json({
             success: false,
@@ -201,34 +176,29 @@ app.post("/api/register", async (req, res) => {
 //Here is the post call for collecting all current player information for the admin to select
 app.get("/api/admin/playerlist", async (req, res) => {
 
+    
     const client = await pool.connect();
-
     try{
-
-        //Here we get a list of all players by gettin every row in database
-
-         const result = await pool.query(
-
+        //Here we get a list of all players by getting every row in database
+         const result = await client.query(
             `SELECT id, first_name, last_name, username, total_points
             FROM players
-            WHERE role != 'admin'
-            `
-
-
+            WHERE role != 'admin'`
         );
 
         //This returns a list of 
         return res.status(200).json({
+            message: "Completed pulling player list.",
             success: true,
             players: result.rows
         });
 
 
     }catch (error) {
-        //This return sends a json that tells React that its false
+        console.error("Error accessing database: ", error);
         return res.status(500).json({
             success: false,
-            message: "Server error"
+            message: "Error pulling player list."
         });
 
     }finally{
@@ -238,84 +208,58 @@ app.get("/api/admin/playerlist", async (req, res) => {
 });
 
 
-//Here I am adding a new section where the points will get retrieved for the user
 app.get("/api/player/:id/points", async (req, res) => {
 
-    const user_id = req.params;
-
+    const { id } = req.params;
+    const client = await pool.connect();
     try {
-
-        const result = await pool.query(
-            `SELECT id, total_points
-             FROM players
-             WHERE id = $1`,
-            [user_id]
+        const result = await client.query(
+            `SELECT total_points FROM players WHERE id = $1`,
+            [id]
         );
 
-        
-        return res.status(200).json({
-            success: true,
-            total_points: result.rows[0].total_points
+        res.json({
+            total_points: result.rows[0].total_points,
+            success: true
         });
 
     } catch (error) {
-
-        console.error("View points error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Server error"
-        });
-
+        res.status(500).json({ message: "Server error" });
+    }finally{
+        client.release();
     }
-
 });
 
 
 
-app.use(express.json());
 
 app.post("/api/GameTransactions", async (req, res) => {
+    
+    const { playerId, gameName, betAmount, gameResult } = req.body;
     const client = await pool.connect();
-
     try {
-
-        const { playerId, gameName, betAmount, gameResult } = req.body;
-        const bet = Number(betAmount);
         let pointsChange;
-
         if (gameResult === "Win") {
-            pointsChange = bet;
+            pointsChange = Number(betAmount);
         } else {
-            pointsChange = -bet;
+            pointsChange = -Number(betAmount);
         }
 
-        console.log(playerId);
-        console.log(gameName);
-        console.log(pointsChange);
-        console.log(gameResult);
 
         const add_game_result = await client.query(
-
             `INSERT INTO game_transactions
             (player_id,game_name, points_change, result)
-
             VALUES ($1, $2, $3, $4)`,
 
-            [
-                playerId,
-                gameName,
-                pointsChange,
-                gameResult
-            ]
-
+            [playerId, gameName, pointsChange,gameResult]
         );
 
-        //The first set of SQL is to create a new record in 
+  
         const update_points = await client.query(
             `UPDATE players
              SET total_points = total_points + $1
              WHERE id = $2`,
+
             [pointsChange, playerId]
         );
 
@@ -323,10 +267,13 @@ app.post("/api/GameTransactions", async (req, res) => {
             message: "Game successfully saved.",
         });
 
+
+        //This is a socket call to tell user to refresh points
+        io.emit("pointsUpdated", playerId);
+
     } catch (error) {
 
         console.error("Error creating transaction:", error);
-
         res.status(500).json({
             message: "Server error creating transaction."
         });
@@ -338,7 +285,8 @@ app.post("/api/GameTransactions", async (req, res) => {
 
 // Get all players ranked by points
 app.get("/api/leaderboard", async (req, res) => {
-    const client = await pool.connect();
+
+    const client = await pool.connect();   
     try {
         const result = await client.query(`
             SELECT id, username, total_points
@@ -362,15 +310,14 @@ app.get("/api/history", async (req, res) => {
     const client = await pool.connect();
     try {
         const playerId = req.query.playerId;
-
         const result = await pool.query(`
             SELECT game_name, points_change, result, created_at
             FROM game_transactions
             WHERE player_id = $1
-            ORDER BY created_at DESC
-        `, [playerId]);
+            ORDER BY created_at DESC`, 
+            [playerId]);
 
-        res.status(201).json({
+        res.json({
             message: "History is shown!",
             history: result.rows
         });
@@ -383,14 +330,7 @@ app.get("/api/history", async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
 // Starting server here
-app.listen(5000, () => {
+server.listen(5000, () => {
     console.log("Backend running on port 5000");
 });

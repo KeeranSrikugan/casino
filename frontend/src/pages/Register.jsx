@@ -20,7 +20,6 @@ function Register() {
     if (!firstName){
       setResult("Please enter your first name.");
     }
-
     if (!firstName){
       setResult("Please enter your first name.");
       return;
@@ -37,7 +36,7 @@ function Register() {
 
     try {
 
-        // Send HTTP POST request to Node.js
+        // Send HTTP POST request to Node.js with registration info
         const response = await fetch(
             "http://localhost:5000/api/register",
             {
@@ -55,25 +54,20 @@ function Register() {
             }
         );
 
-        // Convert the response into JSON
         const data = await response.json();
 
-        //Here is the code that runs based on if the results returned true or false
-        if(data.success === true){
 
+        if(data.success === true){
+        //If the registration is successful, remove the local storage player and register new player to remember who is accessing the webpage and go to points page.
+        //If there is an issue with registation, output the error.
           console.log(data.player);
           localStorage.removeItem("player");
-
-          //Here the players info is saved in local storage
           localStorage.setItem(
             "player", JSON.stringify(data.player)
           );
-
-
           setResult(data.message);
           navigate('/ViewPoints');
 
-          
         }
         else{
             setResult(data.message);
@@ -85,85 +79,77 @@ function Register() {
 
 
   return (
-    <div className="register-container">
+    <div className="register_container">
+    <div className="register_box">
 
-            <div className="register-box">
+        <button
+            className="register_back_button"
+            onClick={() => navigate(-1)}
+        >
+            Back
+        </button>
 
-                {/* Back Button */}
-                <button
-                    className="register-back-button" onClick={() => navigate(-1)}>
-                      Back
-                </button>
+        <h1>Create Account</h1>
 
-                <h1>Create Account</h1>
+        <p className="register_subtitle">
+            Enter your information to create an account
+        </p>
 
-                <p className="register-subtitle">
-                    Enter your information to create an account
-                </p>
+        <div className="register_form">
 
-                {/* First Name */}
-                <div className="register-input-group">
-                    <label>First Name</label>
+            <div className="register_input_group">
+                <label>First Name</label>
+                <input
+                    type="text"
+                    placeholder="Enter your first name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                />
+            </div>
 
-                    <input
-                        type="text"
-                        placeholder="Enter your first name"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                </div>
+            <div className="register_input_group">
+                <label>Last Name</label>
+                <input
+                    type="text"
+                    placeholder="Enter your last name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                />
+            </div>
 
-                {/* Last Name */}
-                <div className="register-input-group">
-                    <label>Last Name</label>
+            <div className="register_input_group">
+                <label>Username</label>
+                <input
+                    type="text"
+                    placeholder="Create a username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+            </div>
 
-                    <input
-                        type="text"
-                        placeholder="Enter your last name"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
-                </div>
-
-                {/* Username */}
-                <div className="register-input-group">
-                    <label>Username</label>
-
-                    <input
-                        type="text"
-                        placeholder="Create a username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-
-                {/* Password */}
-                <div className="register-input-group">
-                    <label>Password</label>
-
-                    <input
-                        type="password"
-                        placeholder="Create a password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-
-                {/* Registration Result */}
-                <p className="register-result">{result}</p>
-
-                {/* Register Button */}
-                <button
-                    className="register-button"
-                    onClick={handleRegister}
-                >
-                    Register
-                </button>
-
+            <div className="register_input_group">
+                <label>Password</label>
+                <input
+                    type="password"
+                    placeholder="Create a password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
             </div>
 
         </div>
 
+        <p className="register_result">{result}</p>
+
+        <button
+            className="register_button"
+            onClick={handleRegister}
+        >
+            Register
+        </button>
+
+    </div>
+</div>
   );
 }
 

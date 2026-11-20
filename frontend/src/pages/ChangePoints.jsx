@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import io from "socket.io-client";
+
+
+
 function ChangePoints() {
 
   const [player, setPlayer] = useState(JSON.parse(localStorage.getItem("selectedPlayer")));
@@ -41,17 +45,20 @@ function ChangePoints() {
             
             console.log(data.message);
             setFinalResult(data.message);
-
             // Reset inputs
             setGameType("");
             setBetAmount("");
+
+            io.emit("pointsUpdated", player.id);
 
         } catch (error) {
             console.error("Error:", "Unable to connect to server.");
         }
     }
-
   };
+
+
+
 
  
   return (
