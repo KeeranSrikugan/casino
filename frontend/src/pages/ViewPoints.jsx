@@ -45,8 +45,9 @@ function ViewPoints() {
   return (
      <div className="viewpoints-container">
 
-            <div className="points-box">
 
+
+            <div className="points-box">
                 <button className="register_back_button" onClick={() => navigate(-1)}>
                     Back
                 </button>

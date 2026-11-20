@@ -82,10 +82,7 @@ function Register() {
     <div className="register_container">
     <div className="register_box">
 
-        <button
-            className="register_back_button"
-            onClick={() => navigate(-1)}
-        >
+        <button className="register_back_button" onClick={() => navigate(-1)}>
             Back
         </button>
 

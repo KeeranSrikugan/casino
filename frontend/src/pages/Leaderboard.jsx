@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './style/Leaderboard.css';
 
 function Leaderboard() {
 
+    const navigate = useNavigate();
     const [players, setPlayers] = useState([]);
 
     useEffect(() => {
@@ -24,6 +26,10 @@ function Leaderboard() {
 
     return (
         <div className="leaderboard-container">
+
+            <button className="register_back_button" onClick={() => navigate('/ViewPoints')}>
+                Back
+            </button>
 
             <h1>Leaderboard</h1>
 
