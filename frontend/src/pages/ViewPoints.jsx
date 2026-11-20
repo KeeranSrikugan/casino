@@ -43,18 +43,17 @@ function ViewPoints() {
     }, []);
 
   return (
+    
      <div className="viewpoints-container">
+            <button className="register_back_button" onClick={() => navigate("/Login")}>
+                Back
+            </button>
 
             <div className="points-box">
-                <button className="register_back_button" onClick={() => navigate(-1)}>
-                    Back
-                </button>
 
                 <h1>Total Points</h1>
 
-                <div className="points-number">
-                    {totalPoints}
-                </div>
+                <div className="points-number"> {totalPoints}</div>
 
                 <p className="points-subtitle">
                     Keep playing to earn more points!

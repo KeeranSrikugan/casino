@@ -17,7 +17,13 @@ function Login() {
 
     //Handles the login functionality
     const handleLogin = async () => {
+        
         try {
+
+            if (!username || !password) {
+                setResult("Please enter a username and/or password.");
+                return;
+             }
 
             // Send HTTP POST request to Node.js
             const response = await fetch(
@@ -62,7 +68,7 @@ function Login() {
                 }
             }
             else{
-                setResult("Incorrect passweord or username entered. Please try again.")
+                setResult("Incorrect password or username entered. Please try again.")
             }
         } catch (error) {
             console.error("Error:", error);
@@ -73,6 +79,9 @@ function Login() {
 
     return (
        <div className="login_container">
+        <button className="register_back_button" onClick={() => navigate("/")}>
+            Back
+        </button>
         <div className="login_box">
 
             <h1>♠ Welcome Back Player! ♦</h1>
