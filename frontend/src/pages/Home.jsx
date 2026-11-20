@@ -8,14 +8,14 @@ function Home() {
 
     
 return (
-    <div className="HomeContainer">
-        <div className="HomeContent">
+    <div className="home_container">
+        <div className="home_content">
 
             <h1>♠ Xennial's Casino Event ♦</h1>
             <h2>Welcome to Xennial's In-House Casino Event</h2>
             <p>Login or register to keep track of your points!</p>
 
-            <div className="HomeButtons">
+            <div className="home_buttons">
                 <button onClick={() => navigate('/login')}>
                     Login
                 </button>

@@ -1,5 +1,5 @@
 
-.HomeContainer {
+.Home_Container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -8,7 +8,7 @@
     font-family: Arial, sans-serif;
 }
 
-.HomeContent {
+.Home_Content {
     text-align: center;
     background-color: #3b1515;
     color: white;
@@ -18,18 +18,18 @@
     max-width: 450px;
 }
 
-.casino-symbols {
+.casino_symbols {
     font-size: 25px;
     margin-bottom: 15px;
     color: #d4af37;
 }
 
-.HomeContent h1 {
+.home_content h1 {
     color: #d4af37;
     font-size: 32px;
 }
 
-.HomeContent p {
+.home_content p {
     color: #ddd;
     line-height: 1.5;
     margin-bottom: 25px;
@@ -37,7 +37,7 @@
 
 
 
-.HomeButtons button {
+.home_buttons button {
     padding: 12px;
     font-size: 16px;
     font-weight: bold;
