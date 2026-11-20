@@ -1,11 +1,30 @@
 
+/* Remove default browser spacing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body, #root {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
 .login_container {
     min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #2b0000;
     font-family: Arial, sans-serif;
+    padding: 20px;
 }
 
 .login_box {
@@ -13,12 +32,11 @@
     color: white;
     padding: 40px;
     width: 350px;
+    max-width: 100%;
     border: 2px solid #d4af37;
     border-radius: 10px;
     text-align: center;
 }
-
-
 
 .login_box h1 {
     color: #d4af37;
@@ -70,29 +88,17 @@
     font-size: 14px;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Mobile devices */
+@media screen and (max-width: 600px) {
+    .login_container {
+        padding: 15px;
+    }
 
-html, body, #root {
-    width: 100%;
-    min-height: 100%;
-}
+    .login_box {
+        padding: 25px 20px;
+    }
 
-body {
-    overflow-x: hidden;
-}
-
-.login_container {
-    min-height: 100vh;
-    min-height: 100dvh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #2b0000;
-    font-family: Arial, sans-serif;
-    padding: 20px;
+    .login_box h1 {
+        font-size: 23px;
+    }
 }
