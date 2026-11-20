@@ -17,7 +17,7 @@ function ViewPoints() {
         // Retrieve latest points
         const fetchPoints = async () => {
 
-            const response = await fetch(`http://localhost:5000/api/player/${player.id}/points`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/player/${player.id}/points`);
             const data = await response.json();
 
             if (data.success === true) {
@@ -29,7 +29,7 @@ function ViewPoints() {
         fetchPoints();
 
         // Here we open a socket and keep listening for any changes the admin makes to the points.
-        const socket = io("http://localhost:5000");
+        const socket = io(import.meta.env.VITE_API_URL);
         socket.on("pointsUpdated", (playerId) => {
             if (String(playerId) === String(player.id)) {
                 fetchPoints();
@@ -44,8 +44,6 @@ function ViewPoints() {
 
   return (
      <div className="viewpoints-container">
-
-
 
             <div className="points-box">
                 <button className="register_back_button" onClick={() => navigate(-1)}>

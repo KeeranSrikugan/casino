@@ -15,7 +15,7 @@ function ViewPlayersAdmin() {
         //I am putting fetchPlayers 
         const fetchPlayers = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/admin/playerlist");
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/playerlist`);
                 const data = await response.json();
 
                 if (data.success === true) {

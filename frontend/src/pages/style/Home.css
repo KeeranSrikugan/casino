@@ -1,5 +1,5 @@
 
-.Home_Container {
+.HomeContainer {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -8,7 +8,7 @@
     font-family: Arial, sans-serif;
 }
 
-.Home_Content {
+.HomeContent {
     text-align: center;
     background-color: #3b1515;
     color: white;

@@ -13,7 +13,7 @@ function History() {
         const player = JSON.parse(localStorage.getItem("player"));
         try {
             const response = await fetch(
-                `http://localhost:5000/api/history?playerId=${player.id}`
+                `${import.meta.env.VITE_API_URL}/api/history?playerId=${player.id}`
             );
             const data = await response.json();
             console.log(data.message);
